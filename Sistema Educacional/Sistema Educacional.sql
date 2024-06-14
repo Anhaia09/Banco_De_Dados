@@ -267,7 +267,8 @@ SELECT * FROM cursos_disciplinas
  
 
 --Dado o RA ou o Nome do Aluno, buscar no BD todos os demais dados do aluno.
-SELECT * FROM alunos WHERE nome_aluno = 'Ana Pereira';
+SELECT * FROM (matriculas INNER JOIN alunos USING (cpf)) INNER JOIN contatos USING (cpf) 
+WHERE nome_aluno = 'Ana Pereira';
 
 
 --Dado o nome de um departamento, exibir o nome de todos os cursos associados a ele.
@@ -292,9 +293,9 @@ WHERE matriculas.cpf = '456.789.123-00';
 
 --Filtrar todos os alunos matriculados em um determinado curso.
 
-SELECT alunos.* FROM alunos 
-INNER JOIN matriculas ON alunos.cpf = matriculas.cpf 
-WHERE matriculas.id_curso = 10;
+SELECT nome_aluno,status FROM (cursos NATURAL INNER JOIN matriculas)
+NATURAL INNER JOIN alunos
+WHERE nome_curso = 'Engenharia Civil'
 
 
 --Filtrar todos os alunos matriculados em determinada disciplina.
@@ -307,11 +308,11 @@ WHERE disciplinas.nome_disciplina = 'Microbiologia';
 
 
 --Filtrar alunos formados.
-SELECT * FROM alunos WHERE cpf IN (SELECT cpf FROM matriculas WHERE status = 'formado');
+SELECT nome_aluno FROM alunos WHERE cpf IN (SELECT cpf FROM matriculas WHERE status = 'formado');
 
 
 --Filtrar alunos ativos.
-SELECT * FROM alunos WHERE cpf IN (SELECT cpf FROM matriculas WHERE status = 'cursando');
+SELECT nome_aluno FROM alunos WHERE cpf IN (SELECT cpf FROM matriculas WHERE status = 'cursando');
 
 
 --Apresentar a quantidade de alunos ativos por curso.
